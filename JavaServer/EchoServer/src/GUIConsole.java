@@ -54,6 +54,7 @@ public class GUIConsole extends JFrame implements ChatIF {
 
     //main method
     public static void main(String[] args) {
+        
         GUIConsole test = new GUIConsole("localhost", 5555);
     }
 
@@ -171,13 +172,14 @@ public class GUIConsole extends JFrame implements ChatIF {
             }
         });
 
-        try {
-            client = new ChatClient(host, port, this);
-        } catch (IOException exception) {
-            System.out.println("Error: Can't setup connection!!!!"
-                    + " Terminating client.");
-            System.exit(1);
-        }
+     try {
+           client = new ChatClient(host, port, this);
+       } catch (IOException exception) {
+            requestFileList();
+           System.out.println("Error: Can't setup connection!!!!"
+                   + " Terminating client.");
+         System.exit(1);
+       }
         
         
         add("Center", new JScrollPane(messageList));
@@ -187,13 +189,13 @@ public class GUIConsole extends JFrame implements ChatIF {
         saveB.addActionListener(e -> uploadFile());
         downloadB.addActionListener(e -> downloadFile());
 
-        try {
-            client = new ChatClient(host, port, this);
-            requestFileList();
-        } catch (IOException ex) {
-            System.out.println("Error: Can't setup connection! Terminating.");
-            System.exit(1);
-        }
+//        try {
+//            client = new ChatClient(host, port, this);
+//            requestFileList();
+//        } catch (IOException ex) {
+//            System.out.println("Error: Can't setup connection! Terminating.");
+//            System.exit(1);
+//        }
 
         //Do all constructor codes before showing the window
         // Setting visibility of the frame

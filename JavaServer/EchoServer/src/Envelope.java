@@ -1,22 +1,17 @@
-
 import java.io.Serializable;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 /**
- *
- * @author Instructor
- */public class Envelope implements Serializable {
+ * Envelope class for wrapping messages, file data, and additional metadata
+ * for communication between server and client.
+ * This class can hold commands, file data, text messages, and other arguments.
+ */
+public class Envelope implements Serializable {
     private String command;      // Command for the operation (message type or file transfer)
     private String argument;     // Additional argument for the message (optional)
     private String fileName;     // Stores the file name for file transfers
     private byte[] fileData;     // Stores the file content in bytes
-    private Object msg;          // Stores the message or data (text message, object, etc.)
+    private Object msg;          // Stores the message content (text message, object, etc.)
     private String name;         // Name for identification or sender
-    private String arg;          // Argument for the specific purpose (could be a command or other)
 
     // Default constructor
     public Envelope() {}
@@ -25,22 +20,14 @@ import java.io.Serializable;
     public Envelope(String command, String argument, Object msg) {
         this.command = command;
         this.argument = argument;
-        this.fileName = fileName;
-        this.fileData = fileData;
-        this.msg = msg;  // Store the message content
-        this.name = name;
-        this.arg = arg;
+        this.msg = msg;           // Store the message content
     }
 
     // Constructor for file transfers (with command, fileName, and file data)
     public Envelope(String command, String fileName, byte[] fileData) {
         this.command = command;
-        this.argument = null;
         this.fileName = fileName;
         this.fileData = fileData;
-        this.msg = msg; // No message content
-        this.name = name;
-        this.arg = arg;
     }
 
     // Getters and Setters
@@ -62,13 +49,15 @@ import java.io.Serializable;
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    public String getArg() { return arg; }
-    public void setArg(String arg) { this.arg = arg; }
-
     @Override
     public String toString() {
-        return "Envelope{command='" + command + "', argument='" + argument + "', fileName='" + fileName + 
-               "', fileSize=" + (fileData != null ? fileData.length : 0) + " bytes, msg=" + (msg != null ? msg : "null") + 
-               ", name='" + name + "', arg='" + arg + "'}";
+        return "Envelope{" +
+                "command='" + command + '\'' +
+                ", argument='" + argument + '\'' +
+                ", fileName='" + fileName + '\'' +
+                ", fileSize=" + (fileData != null ? fileData.length : 0) + " bytes" +
+                ", msg=" + (msg != null ? msg : "null") +
+                ", name='" + name + '\'' +
+                '}';
     }
 }
