@@ -70,6 +70,20 @@ public class EchoServer extends AbstractServer {
                 System.out.println("Unknown command: " + command);
         }
     }
+    //Function to receive files from client
+    private void receiveFileFromClient(Envelope envelope, ConnectionToClient client) {
+        try {
+            File file = new File(UPLOADS_DIR + envelope.getFileName());
+            Files.write(file.toPath(), envelope.getFileData());
+            System.out.println("File uploaded: " + envelope.getFileName());
+            client.sendToClient("File uploaded successfully: " + envelope.getFileName());
+        } catch (Exception ex) {
+            System.out.println("Error receiving file from client.");
+            client.sendToClient("Error receiving file.");
+        }
+    }
+    
+    
 
 //    public void handleClientCommand(Envelope env, ConnectionToClient client) {
 //        
