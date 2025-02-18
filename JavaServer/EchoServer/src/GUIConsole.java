@@ -6,6 +6,7 @@
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -28,6 +29,9 @@ public class GUIConsole extends JFrame implements ChatIF {
     ChatClient client;
 
     //GUI variables 
+    private JButton browseB = new JButton("Browse");
+    private JButton saveB = new JButton("Save");
+    private JButton downloadB = new JButton("Download");
     private JButton logoffB = new JButton("Logoff");
     private JButton loginB = new JButton("login");
     private JButton sendB = new JButton("Send");
@@ -38,13 +42,14 @@ public class GUIConsole extends JFrame implements ChatIF {
     private JTextField portTxF = new JTextField("5555");
     private JTextField hostTxF = new JTextField("127.0.0.1");
     private JTextField messageTxF = new JTextField("");
-
+    private JComboBox<String> fileListCombo = new JComboBox<>();
+    private JTextArea messageList = new JTextArea();
+    private File selectedFile; 
     //Make labels for port, message and host
     private JLabel portLB = new JLabel("Port: ", JLabel.RIGHT);
     private JLabel hostLB = new JLabel("Host: ", JLabel.RIGHT);
     private JLabel messageLB = new JLabel("Message: ", JLabel.RIGHT);
-    //Make JTextArea
-    private JTextArea messageList = new JTextArea();
+  
 
     //main method
     public static void main(String[] args) {
@@ -68,7 +73,7 @@ public class GUIConsole extends JFrame implements ChatIF {
         add("South", bottom);
 
         //make the bottom part of the window a grid with 6 rows, 2 columns adn 5 pixels of vertical and horizontal space
-        bottom.setLayout(new GridLayout(6, 2, 5, 5));
+        bottom.setLayout(new GridLayout(9, 4, 7, 10));
         bottom.add(userIdLB);
         bottom.add(userIdTxF);
         bottom.add(hostLB);
@@ -81,6 +86,12 @@ public class GUIConsole extends JFrame implements ChatIF {
         bottom.add(logoffB);
         bottom.add(sendB);
         bottom.add(quitB);
+        bottom.add(browseB);
+        bottom.add(saveB);
+        bottom.add(fileListCombo);
+        bottom.add(downloadB);
+        bottom.add(messageTxF);
+        bottom.add(new JButton("Send"));
 
         loginB.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
