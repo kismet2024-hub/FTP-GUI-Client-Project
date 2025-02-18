@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class EchoServer extends AbstractServer {
     //Class variables *************************************************
@@ -42,22 +44,27 @@ public class EchoServer extends AbstractServer {
      * @param client The connection from which the message originated.
      */
     public void handleMessageFromClient(Object msg, ConnectionToClient client) {
-        if (msg instanceof Envelope) {
-            handleClientCommand((Envelope) msg, client);
+        if (msg instanceof Envelope2) {
+            try {
+                handleClientCommand((Envelope2) msg, client);
+            } catch (IOException ex) {
+                Logger.getLogger(EchoServer.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } else {
             String userId = (String) client.getInfo("userId");
 
             if (userId != null) {
                 System.out.println("Message received: " + msg + " from " + client);
                 String messageWithId = userId + ": " + msg;
-                sendToAllClientsInRoom(messageWithId, client.getInfo("room").toString());
+         //       sendToAllClientsInRoom(messageWithId, client.getInfo("room").toString());
             } else {
                 System.out.println("Error: userId is null for client " + client);
             }
         }
+        
     }
     //Function to handle message from client *Receive and Send File to client
-    private void handleClientCommand(Envelope envelope, ConnectionToClient client) {
+    private void handleClientCommand(Envelope2 envelope, ConnectionToClient client) throws IOException {
         String command = envelope.getCommand();
         switch (command) {
             case "#ftpUpload":
@@ -74,7 +81,7 @@ public class EchoServer extends AbstractServer {
         }
     }
     //Function to receive files from client
-    private void receiveFileFromClient(Envelope envelope, ConnectionToClient client) throws IOException {
+    private void receiveFileFromClient(Envelope2 envelope, ConnectionToClient client) throws IOException {
         try {
             File file = new File(UPLOADS_DIR + envelope.getFileName());
             Files.write(file.toPath(), envelope.getFileData());
@@ -248,32 +255,32 @@ public class EchoServer extends AbstractServer {
 //        }
 //    }
 
-    public void sendToClientByUserId(Object msg, String userId) {
-        Thread[] clientThreadList = getClientConnections();
+//    public void sendToClientByUserId(Object msg, String userId) {
+//        Thread[] clientThreadList = getClientConnections();
+//
+//        for (int i = 0; i < clientThreadList.length; i++) {
+//            ConnectionToClient currentClient = (ConnectionToClient) clientThreadList[i];
+//            if (userId.equals(currentClient.getInfo("userId"))) {
+//                try {
+//                    currentClient.sendToClient(msg);
+//                } catch (Exception ex) {
+//                    System.out.println("Error sending message to client");
+//                }
+//            }
+//        }
+//    }
 
-        for (int i = 0; i < clientThreadList.length; i++) {
-            ConnectionToClient currentClient = (ConnectionToClient) clientThreadList[i];
-            if (userId.equals(currentClient.getInfo("userId"))) {
-                try {
-                    currentClient.sendToClient(msg);
-                } catch (Exception ex) {
-                    System.out.println("Error sending message to client");
-                }
-            }
-        }
-    }
-
-    public ArrayList<String> getAllClientsInRoom(String room) {
-        Thread[] clientThreadList = getClientConnections();
-        ArrayList<String> results = new ArrayList<String>();
-        for (int i = 0; i < clientThreadList.length; i++) {
-            ConnectionToClient currentClient = (ConnectionToClient) clientThreadList[i];
-            if (room.equals(currentClient.getInfo("room"))) {
-                results.add(currentClient.getInfo("userId").toString());
-            }
-        }
-        return results;
-    }
+//    public ArrayList<String> getAllClientsInRoom(String room) {
+//        Thread[] clientThreadList = getClientConnections();
+//        ArrayList<String> results = new ArrayList<String>();
+//        for (int i = 0; i < clientThreadList.length; i++) {
+//            ConnectionToClient currentClient = (ConnectionToClient) clientThreadList[i];
+//            if (room.equals(currentClient.getInfo("room"))) {
+//                results.add(currentClient.getInfo("userId").toString());
+//            }
+//        }
+//        return results;
+//    }
 
     protected void serverStarted() {
         System.out.println("Server listening for connections on port " + getPort());
@@ -284,7 +291,7 @@ public class EchoServer extends AbstractServer {
     }
 
     public static void main(String[] args) {
-        int port = 0;
+       int port = 0;
 
         try {
             port = Integer.parseInt(args[0]);
