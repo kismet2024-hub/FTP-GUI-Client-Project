@@ -1,6 +1,9 @@
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.List;
 
 public class EchoServer extends AbstractServer {
     //Class variables *************************************************
@@ -71,7 +74,7 @@ public class EchoServer extends AbstractServer {
         }
     }
     //Function to receive files from client
-    private void receiveFileFromClient(Envelope envelope, ConnectionToClient client) {
+    private void receiveFileFromClient(Envelope envelope, ConnectionToClient client) throws IOException {
         try {
             File file = new File(UPLOADS_DIR + envelope.getFileName());
             Files.write(file.toPath(), envelope.getFileData());
@@ -82,6 +85,40 @@ public class EchoServer extends AbstractServer {
             client.sendToClient("Error receiving file.");
         }
     }
+    
+    
+    //Function to send file to client
+    private void sendFileToClient(ConnectionToClient client, String fileName) throws IOException {
+        try {
+            File file = new File(UPLOADS_DIR + fileName);
+            if (!file.exists()) {
+                client.sendToClient("Error: File not found.");
+                return;
+            }
+            byte[] fileData = Files.readAllBytes(file.toPath());
+            client.sendToClient(new Envelope("#ftpget", fileName, fileData));
+            System.out.println("File sent: " + fileName);
+        } catch (Exception ex) {
+            System.out.println("Error sending file to client.");
+            client.sendToClient("Error sending file.");
+        }
+    }
+    
+    //Function to send a filelist
+    private void sendFileList(ConnectionToClient client) {
+        File folder = new File(UPLOADS_DIR);
+        File[] files = folder.listFiles();
+        List<String> fileList = new ArrayList<>();
+        if (files != null) {
+            for (File file : files) fileList.add(file.getName());
+        }
+        try {
+            client.sendToClient(fileList);
+        } catch (IOException ex) {
+            System.out.println("Error sending file list to client.");
+        }
+    }
+
     
     
 
