@@ -224,7 +224,7 @@ public class GUIConsole extends JFrame implements ChatIF {
             try {
                 byte[] fileData = Files.readAllBytes(selectedFile.toPath());
                 Envelope envelope = new Envelope("#ftpUpload", selectedFile.getName(), fileData);
-                client.handleMessageFromClientUI(envelope);
+                client.handleMessageFromClientUI(envelope.toString());
                 requestFileList();
             } catch (IOException ex) {
                 messageList.append("Error uploading file.\n");
@@ -233,13 +233,15 @@ public class GUIConsole extends JFrame implements ChatIF {
     }
 
     private void requestFileList() {
-        client.handleMessageFromClientUI(new Envelope("#ftplist", null, null));
-    }
+    Envelope envelope = new Envelope("#ftplist", null, null);
+    send(envelope.toString()); // Send request for file list as a string
+}
 
-    private void downloadFile() {
-        String fileName = (String) fileListCombo.getSelectedItem();
-        client.handleMessageFromClientUI(new Envelope("#ftpget", fileName, null));
-    }
+private void downloadFile() {
+    String fileName = (String) fileListCombo.getSelectedItem();
+    Envelope envelope = new Envelope("#ftpget", fileName, null);
+    send(envelope.toString()); // Send file download request as a string
+}
     
     
     public void display(String message) {
