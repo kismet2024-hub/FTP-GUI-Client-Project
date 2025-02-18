@@ -8,6 +8,7 @@ import java.awt.event.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 /**
  *
@@ -177,6 +178,22 @@ public class GUIConsole extends JFrame implements ChatIF {
                     + " Terminating client.");
             System.exit(1);
         }
+        
+        
+        add("Center", new JScrollPane(messageList));
+        add("South", bottom);
+
+        browseB.addActionListener(e -> chooseFile());
+        saveB.addActionListener(e -> uploadFile());
+        downloadB.addActionListener(e -> downloadFile());
+
+        try {
+            client = new ChatClient(host, port, this);
+            requestFileList();
+        } catch (IOException ex) {
+            System.out.println("Error: Can't setup connection! Terminating.");
+            System.exit(1);
+        }
 
         //Do all constructor codes before showing the window
         // Setting visibility of the frame
@@ -194,6 +211,37 @@ public class GUIConsole extends JFrame implements ChatIF {
      *
      * @param message the message to be displayed
      */
+    private void chooseFile() {
+        JFileChooser fileChooser = new JFileChooser();
+        if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            selectedFile = fileChooser.getSelectedFile();
+            messageList.append("Selected file: " + selectedFile.getName() + "\n");
+        }
+    }
+
+    private void uploadFile() {
+        if (selectedFile != null) {
+            try {
+                byte[] fileData = Files.readAllBytes(selectedFile.toPath());
+                Envelope envelope = new Envelope("#ftpUpload", selectedFile.getName(), fileData);
+                client.handleMessageFromClientUI(envelope);
+                requestFileList();
+            } catch (IOException ex) {
+                messageList.append("Error uploading file.\n");
+            }
+        }
+    }
+
+    private void requestFileList() {
+        client.handleMessageFromClientUI(new Envelope("#ftplist", null, null));
+    }
+
+    private void downloadFile() {
+        String fileName = (String) fileListCombo.getSelectedItem();
+        client.handleMessageFromClientUI(new Envelope("#ftpget", fileName, null));
+    }
+    
+    
     public void display(String message) {
 
         messageList.append(message + "\n");

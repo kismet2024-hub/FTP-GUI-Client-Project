@@ -44,9 +44,9 @@ public class EchoServer extends AbstractServer {
      * @param client The connection from which the message originated.
      */
     public void handleMessageFromClient(Object msg, ConnectionToClient client) {
-        if (msg instanceof Envelope2) {
+        if (msg instanceof Envelope) {
             try {
-                handleClientCommand((Envelope2) msg, client);
+                handleClientCommand((Envelope) msg, client);
             } catch (IOException ex) {
                 Logger.getLogger(EchoServer.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -64,7 +64,7 @@ public class EchoServer extends AbstractServer {
         
     }
     //Function to handle message from client *Receive and Send File to client
-    private void handleClientCommand(Envelope2 envelope, ConnectionToClient client) throws IOException {
+    private void handleClientCommand(Envelope envelope, ConnectionToClient client) throws IOException {
         String command = envelope.getCommand();
         switch (command) {
             case "#ftpUpload":
@@ -81,7 +81,7 @@ public class EchoServer extends AbstractServer {
         }
     }
     //Function to receive files from client
-    private void receiveFileFromClient(Envelope2 envelope, ConnectionToClient client) throws IOException {
+    private void receiveFileFromClient(Envelope envelope, ConnectionToClient client) throws IOException {
         try {
             File file = new File(UPLOADS_DIR + envelope.getFileName());
             Files.write(file.toPath(), envelope.getFileData());
