@@ -138,7 +138,7 @@ public class GUIConsole extends JFrame implements ChatIF {
 
         sendB.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                //
+               
                 String message = messageTxF.getText();
                 //Calling the function display
                 messageTxF.setText("");

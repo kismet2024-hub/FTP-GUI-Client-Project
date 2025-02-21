@@ -67,14 +67,11 @@ public class EchoServer extends AbstractServer {
     private void handleClientCommand(Envelope envelope, ConnectionToClient client) throws IOException {
         String command = envelope.getCommand();
         switch (command) {
-            case "#ftpUpload":
-                receiveFileFromClient(envelope, client);
+            case "#ftpUpload": receiveFileFromClient(envelope, client);
                 break;
-            case "#ftpget":
-                sendFileToClient(client, envelope.getArgument());
+            case "#ftpget":sendFileToClient(client, envelope.getArgument());
                 break;
-            case "#ftplist":
-                sendFileList(client);
+            case "#ftplist":sendFileList(client);
                 break;
             default:
                 System.out.println("Unknown command: " + command);
@@ -83,9 +80,12 @@ public class EchoServer extends AbstractServer {
     //Function to receive files from client
     private void receiveFileFromClient(Envelope envelope, ConnectionToClient client) throws IOException {
         try {
+            //Extracts filename / file data from the envelope object
             File file = new File(UPLOADS_DIR + envelope.getFileName());
+           //It attempts to create a new file object using the file name provided
             Files.write(file.toPath(), envelope.getFileData());
             System.out.println("File uploaded: " + envelope.getFileName());
+            //If the file is successfully saved, it prints a success message back to the client
             client.sendToClient("File uploaded successfully: " + envelope.getFileName());
         } catch (Exception ex) {
             System.out.println("Error receiving file from client.");

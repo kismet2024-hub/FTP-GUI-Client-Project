@@ -6,13 +6,21 @@ import java.io.Serializable;
  * This class can hold commands, file data, text messages, and other arguments.
  */
 public class Envelope implements Serializable {
-    private String command;      // Command for the operation (message type or file transfer)
-    private String argument;     // Additional argument for the message (optional)
-    private String fileName;     // Stores the file name for file transfers
-    private byte[] fileData;     // Stores the file content in bytes
-    private Object msg;          // Stores the message content (text message, object, etc.)
-    private String name;         // Name for identification or sender
-
+    // Command for the operation (message type or file transfer)
+    private String command;   
+    // Additional argument for the message (optional)
+    private String argument;
+    // Stores the file name for file transfers
+    private String fileName;    
+    // Stores the file content in bytes
+    private byte[] fileData;    
+    // Stores the message content (text message, object, etc.)
+    private Object msg; 
+    // Name for identification or sender
+    private String name;       
+    
+    
+    
     // Default constructor
     public Envelope() {}
 
@@ -20,7 +28,8 @@ public class Envelope implements Serializable {
     public Envelope(String command, String argument, Object msg) {
         this.command = command;
         this.argument = argument;
-        this.msg = msg;           // Store the message content
+     // Store the message content
+        this.msg = msg;          
     }
 
     // Constructor for file transfers (with command, fileName, and file data)
@@ -51,10 +60,7 @@ public class Envelope implements Serializable {
 
     @Override
     public String toString() {
-        return "Envelope{" +
-                "command='" + command + '\'' +
-                ", argument='" + argument + '\'' +
-                ", fileName='" + fileName + '\'' +
+        return "Envelope{" + "command='" + command + '\'' + ", argument='" + argument + '\'' + ", fileName='" + fileName + '\'' + 
                 ", fileSize=" + (fileData != null ? fileData.length : 0) + " bytes" +
                 ", msg=" + (msg != null ? msg : "null") +
                 ", name='" + name + '\'' +
