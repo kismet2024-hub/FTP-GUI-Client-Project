@@ -1,25 +1,18 @@
 import java.io.Serializable;
+import java.io.File;
+import java.nio.file.Files;
 
 /**
  * Envelope class for wrapping messages, file data, and additional metadata
- * for communication between server and client.
- * This class can hold commands, file data, text messages, and other arguments.
+ * for communication between server and client in a GUI-based console.
  */
 public class Envelope implements Serializable {
-    // Command for the operation (message type or file transfer)
-    private String command;   
-    // Additional argument for the message (optional)
-    private String argument;
-    // Stores the file name for file transfers
-    private String fileName;    
-    // Stores the file content in bytes
-    private byte[] fileData;    
-    // Stores the message content (text message, object, etc.)
-    private Object msg; 
-    // Name for identification or sender
-    private String name;       
-    
-    
+    private String command;   // Command for the operation (message type or file transfer)
+    private String argument;  // Additional argument for the message (optional)
+    private String fileName;  // Stores the file name for file transfers
+    private byte[] fileData;  // Stores the file content in bytes
+    private Object msg;       // Stores the message content (text message, object, etc.)
+    private String name;      // Name for identification or sender
     
     // Default constructor
     public Envelope() {}
@@ -28,7 +21,6 @@ public class Envelope implements Serializable {
     public Envelope(String command, String argument, Object msg) {
         this.command = command;
         this.argument = argument;
-     // Store the message content
         this.msg = msg;          
     }
 
@@ -61,9 +53,21 @@ public class Envelope implements Serializable {
     @Override
     public String toString() {
         return "Envelope{" + "command='" + command + '\'' + ", argument='" + argument + '\'' + ", fileName='" + fileName + '\'' + 
-                ", fileSize=" + (fileData != null ? fileData.length : 0) + " bytes" +
-                ", msg=" + (msg != null ? msg : "null") +
-                ", name='" + name + '\'' +
-                '}';
+               ", fileSize=" + (fileData != null ? fileData.length : 0) + " bytes" +
+               ", msg=" + (msg != null ? msg : "null") +
+               ", name='" + name + '\'' +
+               '}';
+    }
+
+    // Utility method to create an Envelope for text messages
+    public static Envelope createMessageEnvelope(String message) {
+        return new Envelope("#message", null, message);
+    }
+
+    // Utility method to create an Envelope for file uploads
+    public static Envelope createFileEnvelope(String filePath) throws Exception {
+        File file = new File(filePath);
+        byte[] fileData = Files.readAllBytes(file.toPath());
+        return new Envelope("#ftpUpload", file.getName(), fileData);
     }
 }
